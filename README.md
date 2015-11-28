@@ -11,7 +11,7 @@ The project is tested in Ubuntu 14.04.
 This project needs to have some essential components to start which are:
 
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
-* [Vagrant](https://www.vagrantup.com/)
+* [Vagrant](https://www.vagrantup.com/). Use this [Getting Started guideline](https://docs.vagrantup.com/v2/getting-started/) to familiarise yourself 
 * [Ansible](http://www.ansible.com/)
 * [NFS enable on Linux](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-14-04) - This is essential as it decreases the response time when you click around the Drupal site.
 * [ShadowKoBolt.php5-common](https://github.com/ShadowKoBolt/ansible-php5-common) - You can install this ansible role by typing `ansible-galaxy install ShadowKoBolt.php5-common`
@@ -30,8 +30,8 @@ This project needs to have some essential components to start which are:
 6. Now it will download the specific version of Drupal you selected from the Drupal github.
 6. After that, it will ask you to enter your sudo password. This is because it will try to setup the NFS.
 7. Now sit back, grab a coffee or tea and watch the magic of Vagrant and ansible setting up a Virtual Machine and setup everything to have a fresh Drupal site to play.
-8. If everything goes fine, and the ansible script finishes successfully, you should be able to access the Drupal site via `http://192.168.50.130`.
-9. You should be able also to access [Mailcatcher](http://mailcatcher.me/) through `http://192.168.50.130:1080`
+8. If everything goes fine, and the ansible script finishes successfully, you should be able to access the Drupal site via [http://192.168.50.130](http://192.168.50.130).
+9. You should be able also to access [Mailcatcher](http://mailcatcher.me/) through [http://192.168.50.130:1080](http://192.168.50.130:1080)
 
 ## Structure of the folders
 
