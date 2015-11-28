@@ -47,7 +47,7 @@ The scripts will create the below structured folders:
 ### 1. Configuration variables
 
 In order to create your own project, there are some configuration variables that can be set. These variables exist insibe the `playbook.yml` file and are:
-  * `root_user`: This is the root username that will be used to set the Drupal admin username and set the MySql username
+  * `root_user`: This is the root username that will be used to set the Drupal admin username and set the MySql username. The password is set by default as `password`
   * `database_name`: The variable describes its purpose. It sets up the database name
   * `host_filename`: This is the name of the host file. In our case the actual file name is sampletest_host, so the variable will be sampletest.
   * `site_name`: This sets the Drupal Site name
