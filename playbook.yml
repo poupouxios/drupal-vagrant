@@ -17,7 +17,7 @@
          host_filename: sampletest
          site_name: "Drupal Sample Project"
          drupal_automation_folder: drupal-automation
-         database_dump_name: drupal7_dump
+         database_dump_name: 
 
      - name: install bundle requirements
        apt: pkg={{ item }} state=present
