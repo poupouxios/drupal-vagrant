@@ -8,7 +8,7 @@ The project is tested in Ubuntu 14.04.
 
 ## Dependencies
 
-This project needs to have some essential components to start which are:
+The project needs to have some essential components to start which are:
 
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/). Use this [Getting Started guideline](https://docs.vagrantup.com/v2/getting-started/) to familiarise yourself 
@@ -20,7 +20,7 @@ This project needs to have some essential components to start which are:
 
 ## Run this sample project
 
-1. Clone this project and put it in any place on your computer `git clone https://github.com/poupouxios/drupal-vagrant.git`
+1. Clone the project and put it in any place on your computer `git clone https://github.com/poupouxios/drupal-vagrant.git`
 2. Navigate inside the project and execute the below commands:
   * `git submodule init`
   * `git submodule update`
