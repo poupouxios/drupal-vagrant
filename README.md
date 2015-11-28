@@ -79,3 +79,17 @@ The only extra component that is added in the `playboook.yml` file is Mailcatche
 2. The first time Vagrant will run, it will provision to setup or load from a MySql dump Drupal. After that, it will only execute the first part to boot up the VM. If you want to force it to provision after the `vagrant up` command execute `vagrant provision`.
 3. Always remember to `vagrant halt` before you shut down your PC because Linux don't shut down the VMs automatically and it hangs in the shut down process which leaves you with the option to press the shut down button on your computer to close.
 4. If for somehow the VM was misconfigured and you want to run a new one, just execute `vagrant destroy` and then `vagrant up`. The destroy command will remove entirely the VM and it will start a fresh one. **Always before destroy, ensure that you made a database dump because after the VM is destoyed anything inside the VM will be deleted. The files will not be deleted as they exist outside of the VM**
+
+## TODO List
+
+Some future things to be added are:
+ * Use capistrano to automate deployments on your server
+ * Add more extra components
+
+## License
+
+This project is licensed under the MIT open source license.
+
+## About the Author
+
+[Valentinos Papasavvas](http://www.papasavvas.me/) works as a Senior Web Developer and iOS Developer in a company based in Sheffield/UK. You can find more on his [website](http://www.papasavvas.me/).
