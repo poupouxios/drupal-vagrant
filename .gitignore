@@ -1,0 +1,15 @@
+# Ignore paths that contain user-generated content.
+public/vagrant
+vendor
+.bundle/
+core_structure
+*.txt
+!.gitignore
+!Vagrantfile
+!playbook.yml
+!mailcatcher.yml
+!Gemfile
+!composer.*
+.vagrant/*
+bin/*
+db

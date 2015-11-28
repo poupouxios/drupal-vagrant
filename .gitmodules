@@ -1,0 +1,3 @@
+[submodule "drupal-automation"]
+	path = drupal-automation
+	url = https://github.com/poupouxios/drupal-automation.git

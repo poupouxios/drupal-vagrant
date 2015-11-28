@@ -1,0 +1,88 @@
+---
+ - hosts: default
+   sudo: yes
+   vars: 
+     - distro: debian
+  
+   roles:
+     - ShadowKoBolt.core
+     - { role: geerlingguy.ruby }
+     - ShadowKoBolt.php5-common
+
+   tasks:
+
+     - set_fact:
+         root_user: drupalroot
+         database_name: sampletest
+         host_filename: sampletest
+         site_name: "Drupal Sample Project"
+         drupal_automation_folder: drupal-automation
+         database_dump_name: drupal7_dump
+
+     - name: install bundle requirements
+       apt: pkg={{ item }} state=present
+       with_items:
+         - libsqlite3-dev
+         - python-mysqldb
+         - php5-xmlrpc
+         - php5-memcache
+         - memcached
+
+     - name: bundle install
+       remote_user: vagrant 
+       sudo: no
+       command: bundle --binstubs chdir=/home/vagrant/source/{{drupal_automation_folder}}
+
+     - name: setup mysql user
+       mysql_user: name={{root_user}} password=password priv=*.*:ALL,GRANT  host=% state=present
+
+     - name: set APPLICATION_ENV
+       lineinfile: dest=/home/vagrant/.bashrc line="export APPLICATION_ENV=local" state=present regexp='^export APPLICATION_ENV='
+
+     - name: create {{database_name}} db
+       mysql_db: name={{database_name}} state=present login_user={{root_user}} login_password=password
+
+     - name: install all composer packages
+       command: php composer.phar install --no-interaction chdir=/home/vagrant/source/{{drupal_automation_folder}}
+
+     - name: Checking if a mysql dump exist
+       stat: path=/home/vagrant/source/db/{{database_dump_name}}.sql
+       register: mysqldump_path
+
+     - name: Checking if Drupal 8 core folder exist
+       stat: path=/home/vagrant/source/public/vagrant/core
+       register: folder_exists
+
+     - name: import {{database_name}} db 
+       shell: mysql -u {{root_user}} -ppassword {{database_name}} < /home/vagrant/source/db/{{database_dump_name}}.sql
+       when: mysqldump_path.stat.exists
+
+     - name: setup Drupal 8 site through drush
+       shell: yes 'y' | /home/vagrant/source/{{drupal_automation_folder}}/vendor/bin/drush site-install standard --db-url='mysql://{{root_user}}:password@localhost/{{database_name}}' --site-name={{site_name}} --account-name={{root_user}} --account-pass=password --account-mail={{root_user}}@{{root_user}}.com --site-mail={{root_user}}@{{root_user}}.com chdir=/home/vagrant/source/public/vagrant/core
+       when: not mysqldump_path.stat.exists and folder_exists.stat.exists
+
+     - name: setup Drupal 7 site through drush
+       shell: yes 'y' | /home/vagrant/source/{{drupal_automation_folder}}/vendor/bin/drush site-install standard --db-url='mysql://{{root_user}}:password@localhost/{{database_name}}' --site-name={{site_name}} --account-name={{root_user}} --account-pass=password --account-mail={{root_user}}@{{root_user}}.com --site-mail={{root_user}}@{{root_user}}.com chdir=/home/vagrant/source/public/vagrant
+       when: not mysqldump_path.stat.exists and not folder_exists.stat.exists
+
+     - name: copy vhost
+       command: cp /home/vagrant/source/{{host_filename}}_host /etc/apache2/sites-enabled/{{host_filename}}.conf
+
+     - name: link vhost 
+       file: src=/etc/apache2/sites-enabled/{{host_filename}}.conf dest=/etc/apache2/sites-available/{{host_filename}}.conf state=link
+
+     - name: remove apache2 default host from sites-enabled
+       file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+
+     - name: remove apache2 default host from sites-available
+       file: path=/etc/apache2/sites-available/000-default.conf state=absent
+
+     - name: enable rewrite engine
+       command: a2enmod rewrite
+       sudo: yes
+
+     - name: restart apache
+       command: service apache2 restart
+       sudo: yes
+
+     - include: mailcatcher.yml 
