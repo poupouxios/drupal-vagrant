@@ -31,12 +31,22 @@ This project needs to have some essential components to start which are:
 6. After that, it will ask you to enter your sudo password. This is because it will try to setup the NFS.
 7. Now sit back, grab a coffee or tea and watch the magic of Vagrant and ansible setting up a Virtual Machine and setup everything to have a fresh Drupal site to play.
 8. If everything goes fine, and the ansible script finishes successfully, you should be able to access the Drupal site via `http://192.168.50.130`.
+9. You should be able also to access [Mailcatcher](http://mailcatcher.me/) through `http://192.168.50.130:1080`
+
+## Structure of the folders
+
+The scripts will create the below structured folders:
+  * `core_structure` folder:  This will have all the Drupal core files downloaded from github
+  * `db` folder: This will be an empty folder. This folder will be used to put your MySql dump files in order to load them next time you want to provision your VM and you don't want to setup a fresh Drupal instance
+  * `public` folder: This is where your Drupal code will live. This folder has 2 subfolders inside:
+    * `current` folder: This folder is the one used outside of the VM to put your code. If you open it you will see a lot of files and folders symlinked from the `core_structure` folder except the sites folders on Drupal 7 where is being created. For Drupal 7 put your code inside the `public/current/sites` folder and for Drupal 8 put your code inside the `public/current` folder.
+    * `vagrant` folder: In this folder, don't add any other files. Its purpose is for the VM to be able to access the Drupal core files from `core_structure` folder and the `sites` folder from `public/current`. Any changes you add inside the `public/current/sites` folder, they will automatically appears inside the `vagrant/sites` folder.
 
 ## Configure the scripts and setup your own project
 
 ### 1. Configuration variables
 
-In order to create your own project, there are some configuration variables that can be set. These variables exist insibe the `playbook.ynl` file and are:
+In order to create your own project, there are some configuration variables that can be set. These variables exist insibe the `playbook.yml` file and are:
   * `root_user`: This is the root username that will be used to set the Drupal admin username and set the MySql username
   * `database_name`: The variable describes its purpose. It sets up the database name
   * `host_filename`: This is the name of the host file. In our case the actual file name is sampletest_host, so the variable will be sampletest.
@@ -48,3 +58,24 @@ There are also inside the `Vagrantfile` some configuration variables you might w
   * `config.vm.hostname`: Change the name of this hostname to be something unique for your project
   * `config.vm.network :private_network`: This needs to be changed and each project has its own ip so you can run multiple projects in VM and you can access them at the same time.
   * `vb.customize ['modifyvm', :id, '--cpus', '2', '--memory', 3096]`: This customization is if you want to change the number of cores and memory that will run Drupal inside the VM. I set them for 2 cores and 3GB ram.
+
+## 2. Setup your own project
+
+1. Copy `mailcatcher.yml`,`playbook.yml`,`sampletest_host` and `Vagrantfile` in a folder of you choice. That folder will be your project folder
+2. Setup the configuration variables based on your project needs
+3. `git init` inside your project folder
+4. `git submodule add https://github.com/poupouxios/drupal-automation.git`
+5. `vagrant up` to start the VM
+6.  Select the version of Drupal
+7.  That's it! Now wait until the scripts finish.
+
+## Extra components
+
+The only extra component that is added in the `playboook.yml` file is Mailcatcher. Mailcatcher offers the ability to catch emails that are being sent through Drupal so you can debug the content of the email, check email headers or avoid accidentally sending emails to real people (As a best practise, you must always avoid testing with real email of clients. Always create fake accounts on development environments).
+
+## Extra useful information
+
+1. Assumed that you have already setup locally a Drupal version and you want to switch to this automatic way. Just get a MySql dump of your project, put it inside the `db` folder, set your `database_dump_name` variable and load the VM. After that, copy paste your code in the correct folders (inside `public/current` folder) and then run Vagrant.
+2. The first time Vagrant will run, it will provision to setup or load from a MySql dump Drupal. After that, it will only execute the first part to boot up the VM. If you want to force it to provision after the `vagrant up` command execute `vagrant provision`.
+3. Always remember to `vagrant halt` before you shut down your PC because Linux don't shut down the VMs automatically and it hangs in the shut down process which leaves you with the option to press the shut down button on your computer to close.
+4. If for somehow the VM was misconfigured and you want to run a new one, just execute `vagrant destroy` and then `vagrant up`. The destroy command will remove entirely the VM and it will start a fresh one. **Always before destroy, ensure that you made a database dump because after the VM is destoyed anything inside the VM will be deleted. The files will not be deleted as they exist outside of the VM**
